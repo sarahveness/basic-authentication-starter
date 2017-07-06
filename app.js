@@ -6,6 +6,11 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var expressValidator = require('express-validator');
 
+// Authentication Packages
+var session = require('express-session');
+var passport = require('passport');
+var MySQLStore = require('express-mysql-session')(session);
+
 var index = require('./routes/index');
 var users = require('./routes/users');
 
@@ -25,6 +30,26 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(expressValidator()); // this line must be immediately after any of the bodyParser middlewares!
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+var options = {
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
+};
+
+var sessionStore = new MySQLStore(options);
+
+app.use(session({
+  secret: 'fnlsfnbsjksjs', //should use a string randomizer not a literal string
+  resave: false,
+  store: sessionStore,
+  saveUninitialized: false
+  // cookie: { secure: true }
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/', index);
 app.use('/users', users);
