@@ -34,7 +34,7 @@ module.exports = {
 	plugins: [
 		new ExtractTextPlugin("../css/style.css"),
 	    new DotenvPlugin({
-			sample: './.env.default',
+			sample: './.env',
 			path: './.env'
 	    }),
 	    new BrowserSyncPlugin({

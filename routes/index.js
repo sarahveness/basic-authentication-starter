@@ -21,6 +21,12 @@ router.post('/login', passport.authenticate('local', {
   failureRedirect: '/login'
 }));
 
+router.get('/logout', function(req, res) {
+  req.logout();
+  req.session.destroy();
+  res.redirect('/');
+});
+
 router.get('/profile', authenticationMiddleware(), function(req, res) {
   res.render('profile', { title: 'Profile' });
 });
